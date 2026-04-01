@@ -1,7 +1,12 @@
-# 한국 음악 추천 및 공유 플랫폼
+# 🎵 K-Vibe (한국 음악 추천 및 공유 플랫폼)
+
+**공식 접속 주소 (Main Address):** [https://otaehun65-star.github.io/Music/](https://otaehun65-star.github.io/Music/)
+
+---
 
 ## 📝 프로젝트 소개
 우리나라(한국)의 다양한 음악을 포함하여, 이용자들이 자신이 좋아하는 음악을 소개하고 서로의 음악 추천을 공유할 수 있는 커뮤니티 성격의 웹 플랫폼입니다.
+현재 **GitHub Pages**를 통해 전 세계 어디서든 접속 가능한 라이브 상태입니다.
 
 ## 🌟 주요 기능 (Key Features)
 

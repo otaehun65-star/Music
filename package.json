@@ -1,0 +1,12 @@
+{
+  "name": "k-vibe-music",
+  "version": "1.0.0",
+  "description": "K-Vibe Music Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve ."
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}
