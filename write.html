@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음악 추천하기 | K-Vibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css?v=11">
+    <style>
+        .write-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 40px; }
+        .write-card { width: 600px; padding: 40px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 10px; color: var(--text-secondary); font-weight: 600; }
+        .write-card input, .write-card textarea, .write-card select { width: 100%; padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; outline: none; font-family: 'Inter'; transition: 0.3s; font-size: 1rem; }
+        .write-card input:focus, .write-card textarea:focus, .write-card select:focus { border-color: var(--accent-color); background: rgba(255,255,255,0.1); }
+        .write-card select { appearance: none; }
+        .write-card textarea { height: 120px; resize: none; margin-bottom: 20px;}
+        .btn-group { display: flex; gap: 15px; margin-top: 10px;}
+        .btn-group button { flex: 1; padding: 15px; border-radius: 10px; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <nav class="navbar">
+        <div class="logo" onclick="location.href='index.html'">K-Vibe</div>
+    </nav>
+    <div class="write-container">
+        <div class="glass-card write-card fade-in">
+            <h2 style="text-align:center; margin-bottom: 40px;">🎵 나만의 음악 추천하기</h2>
+            
+            <div class="form-group">
+                <label>어떤 노래인가요?</label>
+                <input type="text" id="postTitle" placeholder="곡명 (예: 사건의 지평선)" />
+            </div>
+            <div class="form-group">
+                <label>가수 이름</label>
+                <input type="text" id="postArtist" placeholder="아티스트명 (예: 윤하)" />
+            </div>
+            
+            <div class="form-group">
+                <label>가장 잘 어울리는 장르</label>
+                <select id="postGenre">
+                    <option value="K-Pop">K-Pop</option>
+                    <option value="Indie">인디 뮤직</option>
+                    <option value="Hip-hop">힙합/R&B</option>
+                    <option value="Ballad">발라드</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>앨범 커버 이미지 주소 (선택)</label>
+                <input type="text" id="postImage" placeholder="비워주시면 예쁜 기본 이미지가 무작위로 적용됩니다." />
+            </div>
+            
+            <div class="form-group">
+                <label>이 노래를 추천하는 이유</label>
+                <textarea id="postDesc" placeholder="이 음악과 관련된 기분이나 얽힌 이야기 썰을 자유롭게 들려주세요! (작성자가 쓴 첫 번째 댓글로 박제됩니다!)"></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-outline" onclick="location.href='index.html'">취소</button>
+                <button class="btn btn-primary" onclick="submitPost()">추천 포스트 등록</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitPost() {
+            const title = document.getElementById('postTitle').value.trim();
+            const artist = document.getElementById('postArtist').value.trim();
+            const genreRaw = document.getElementById('postGenre').value;
+            const desc = document.getElementById('postDesc').value.trim();
+            const imageInput = document.getElementById('postImage').value.trim();
+            
+            if(!title || !artist) {
+                return alert('앗! 곡명과 아티스트 이름은 다른 분들이 들을 수 있게 꼭 적어주셔야 해요.');
+            }
+
+            // 고음질 이미지 플레이스홀더 무작위 할당
+            const fallbackImages = [
+                'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=400',
+                'https://images.unsplash.com/photo-1493225457124-a1a2a5f5f9af?auto=format&fit=crop&q=80&w=400',
+                'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=400',
+                'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=400'
+            ];
+            const finalImage = imageInput || fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { name: '이름없는 요정' };
+
+            let customPosts = JSON.parse(localStorage.getItem('customPosts')) || [];
+            
+            // 새 포스트 생성 (네이티브 오디오 API와 호환되게 구성)
+            const newPost = {
+                id: Date.now(), // 겹치지 않는 고유 시간 ID
+                title: title,
+                artist: artist,
+                genre: genreRaw,
+                imageUrl: finalImage,
+                user: currentUser.name,
+                likes: 0,
+                comments: 0,
+                searchKeywords: title + " " + artist + " " + genreRaw + " " + currentUser.name + " " + desc,
+                audioQuery: title + " " + artist // 애플 뮤직에서 음원 조회
+            };
+
+            customPosts.unshift(newPost); // 새 글이 최신 피드 가장 첫 번째 자리에 오도록 삽입!
+            localStorage.setItem('customPosts', JSON.stringify(customPosts));
+            
+            // 만약 설명글(추천사)을 썼다면, 모달창 1번 베스트 댓글로 추가해주는 멋진 디테일
+            if(desc) {
+                let customComments = JSON.parse(localStorage.getItem('customComments')) || {};
+                customComments[newPost.id] = [desc + " <br><span style='font-size:0.75rem; color:#aaa;'>(작성자가 남긴 추천 메모)📝</span>"];
+                localStorage.setItem('customComments', JSON.stringify(customComments));
+            }
+
+            alert('✨ 성공적으로 세상에 추천 노래가 등록되었습니다!');
+            location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

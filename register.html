@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 | K-Vibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css?v=11">
+    <style>
+        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+        .auth-card { width: 450px; padding: 40px; text-align: center; }
+        .auth-card input { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; outline: none; transition: 0.3s; font-size: 1rem; }
+        .auth-card input:focus { border-color: var(--accent-color); background: rgba(255,255,255,0.1); }
+        .auth-card button { width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <nav class="navbar">
+        <div class="logo" onclick="location.href='index.html'">K-Vibe</div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="glass-card auth-card fade-in">
+            <h2>K-Vibe 시작하기 🚀</h2>
+            <p style="margin-bottom: 30px; color: var(--text-secondary);">멋진 음악 커뮤니티의 멤버가 되어보세요.</p>
+            
+            <input type="text" id="regName" placeholder="닉네임 (예: 음악요정)" />
+            <input type="email" id="regEmail" placeholder="이메일 주소" />
+            <input type="password" id="regPwd" placeholder="비밀번호" />
+            <input type="password" id="regPwd2" placeholder="비밀번호 확인" />
+            
+            <button class="btn btn-primary" onclick="handleRegister()">회원가입 완료</button>
+            
+            <p style="margin-top: 10px;">이미 계정이 있으신가요? <a href="login.html" style="color:var(--accent-color); font-weight:bold; text-decoration:none;">로그인하기</a></p>
+        </div>
+    </div>
+
+    <script>
+        function handleRegister() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pwd = document.getElementById('regPwd').value;
+            const pwd2 = document.getElementById('regPwd2').value;
+
+            if(!name || !email || !pwd) {
+                return alert('모든 칸을 채워주세요!');
+            }
+            if(pwd !== pwd2) {
+                return alert('비밀번호가 일치하지 않습니다.');
+            }
+
+            // 구형 프론트엔드 환경을 위해 브라우저의 전용 저장소(Local Storage) 활용
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            if(users.find(u => u.email === email)) {
+                return alert('이미 가입된 이메일입니다. 로그인 창을 이용해주세요!');
+            }
+
+            users.push({ name, email, pwd });
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('🎉 가입이 성공적으로 완료되었습니다! 로그인 페이지로 이동합니다.');
+            location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

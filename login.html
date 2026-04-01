@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 | K-Vibe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        .auth-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+        .auth-card { width: 400px; padding: 40px; text-align: center; }
+        .auth-card input { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; outline: none; }
+        .auth-card button { width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <nav class="navbar">
+        <div class="logo" onclick="location.href='index.html'">K-Vibe</div>
+    </nav>
+    <div class="auth-container">
+        <div class="glass-card auth-card">
+            <h2>다시 오셨군요! 👋</h2>
+            <p style="margin-bottom: 30px;">K-Vibe에 로그인하고 나만의 플레이리스트를 만들어보세요.</p>
+            
+            <input type="email" id="logEmail" placeholder="이메일 주소" />
+            <input type="password" id="logPwd" placeholder="비밀번호" />
+            
+            <button class="btn btn-primary" onclick="handleLogin()">로그인</button>
+            
+            <p>계정이 없으신가요? <a href="register.html" style="color:var(--accent-color);">회원가입</a></p>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const email = document.getElementById('logEmail').value.trim();
+            const pwd = document.getElementById('logPwd').value;
+
+            if(!email || !pwd) {
+                return alert('이메일과 비밀번호를 모두 입력해주세요.');
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            let found = users.find(u => u.email === email && u.pwd === pwd);
+
+            if(found) {
+                // 로그인 성공 시 현재 로그인된 사용자로 로컬 스토리지에 세션 저장
+                localStorage.setItem('currentUser', JSON.stringify(found));
+                alert('환영합니다, ' + found.name + '님! 🎵');
+                location.href = 'index.html';
+            } else {
+                alert('이메일 또는 비밀번호가 잘못되었습니다. 다시 시도해주세요.');
+            }
+        }
+    </script>
+</body>
+</html>
